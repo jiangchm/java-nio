@@ -31,15 +31,12 @@ public class NIOServer {
 			if(n == 0){
 				continue ;
 			}
-			Iterator<SelectionKey> it = selector.keys().iterator() ;
+			Iterator<SelectionKey> it = selector.selectedKeys().iterator() ;
 			while(it.hasNext()){
 				SelectionKey key = it.next() ;
-				
 				System.out.println(key);
+				it.remove();
 				//客户端发来数据，服务端读取
-				if(key.isReadable()){
-					read(key) ;
-				}
 				//客户端连接服务端事件
 				if(key.isAcceptable()){
 					ServerSocketChannel server = (ServerSocketChannel) key.channel() ;
@@ -48,7 +45,9 @@ public class NIOServer {
 					////在和客户端连接成功之后，为了可以接收到客户端的信息，需要给通道设置读的权限
 					channel.register(selector, SelectionKey.OP_READ) ;
 				}
-				it.remove();
+				if(key.isReadable()){
+					read(key) ;
+				}
 			}
 		}
 	}
