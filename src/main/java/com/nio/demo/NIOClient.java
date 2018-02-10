@@ -24,9 +24,10 @@ public class NIOClient {
 		System.out.println("¿Í»§¶Ë¼àÌý");
 		while(true){
 			selector.select() ;
-			Iterator<SelectionKey> keys = selector.keys().iterator() ;
+			Iterator<SelectionKey> keys = selector.selectedKeys().iterator() ;
 			while(keys.hasNext()){
 				SelectionKey key = keys.next() ;
+				keys.remove();
 				if(key.isConnectable()){
 					SocketChannel channel = (SocketChannel) key.channel() ;
 					if(channel.isConnectionPending()){
